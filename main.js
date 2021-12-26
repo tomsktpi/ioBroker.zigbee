@@ -592,8 +592,17 @@ class Zigbee extends utils.Adapter {
                 const result = await converter.convertSet(target, key, preparedValue, meta);
                 this.log.debug(`convert result ${safeJsonStringify(result)}`);
                 if (result !== undefined) {
-                    if (stateModel && !isGroup)
-                        this.acknowledgeState(deviceId, model, stateDesc, value);
+                    if (result.hasOwnProperty('state')) {
+                        if (result.state.hasOwnProperty(stateDesc.id)) {
+                           	this.acknowledgeState(deviceId, model, stateDesc, result.state[stateDesc.id]);
+                        }else {
+                            if (stateModel && !isGroup
+                                this.acknowledgeState(deviceId, model, stateDesc, value);
+                        }
+                    }else{
+                        if (stateModel && !isGroup)
+                            this.acknowledgeState(deviceId, model, stateDesc, value);
+                    }  
                     // process sync state list
                     this.processSyncStatesList(deviceId, model, syncStateList);
                     if (isGroup) {
